@@ -1,0 +1,26 @@
+{
+  "name": "nuxt-d1-cloudflare-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev --dotenv .env",
+    "build": "nuxt build",
+    "preview": "wrangler pages dev",
+    "deploy": "wrangler pages deploy",
+    "db:generate": "npx auth generate --output ./migrations/schema.sql",
+    "db:migrate": "wrangler d1 execute better-auth-db --local --file=./migrations/schema.sql",
+    "db:migrate:remote": "wrangler d1 execute better-auth-db --remote --file=./migrations/schema.sql",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "better-auth": "^1.2.0",
+    "nuxt": "^3.16.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.5.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250313.0",
+    "typescript": "^5.8.0",
+    "wrangler": "^4.6.0"
+  }
+}
