@@ -1,0 +1,17 @@
+# Nuxt
+.nuxt
+.output
+.data
+.nitro
+.cache
+
+# Node
+node_modules
+
+# Cloudflare
+.wrangler
+.dev.vars
+
+# Misc
+.DS_Store
+*.log

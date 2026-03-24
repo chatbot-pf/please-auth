@@ -1,0 +1,8 @@
+name = "nuxt-d1-cloudflare-example"
+compatibility_date = "2025-03-24"
+pages_build_output_dir = ".output/public"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "better-auth-db"
+database_id = "<YOUR_D1_DATABASE_ID>"
