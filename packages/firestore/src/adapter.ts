@@ -204,10 +204,11 @@ function createCustomAdapter(
           });
         }
 
-        // Apply projection after sorting
+        // Apply projection after sorting; always include `id` to ensure
+        // consistent result shape across all adapter paths.
         let results = select
           ? fullResults.map((r) => {
-              const projected: Record<string, unknown> = {};
+              const projected: Record<string, unknown> = { id: r.id };
               for (const key of select) {
                 projected[key] = r[key];
               }
