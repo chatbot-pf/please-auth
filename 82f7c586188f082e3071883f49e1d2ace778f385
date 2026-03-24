@@ -1,0 +1,49 @@
+apps/docs/content/docs/2.plugins/2.waitlist-client.md
+  d841f1c82d704a1a 1-141
+apps/docs/content/docs/1.getting-started/1.introduction.md
+  d841f1c82d704a1a 1-52
+apps/docs/content/docs/2.plugins/1.waitlist.md
+  d841f1c82d704a1a 1-326
+apps/docs/content/docs/3.adapters/1.firestore.md
+  d841f1c82d704a1a 1-142
+apps/docs/content/docs/1.getting-started/2.installation.md
+  d841f1c82d704a1a 1-69
+apps/docs/.gitignore
+  d841f1c82d704a1a 1-12
+apps/docs/package.json
+  d841f1c82d704a1a 1-15
+.gitignore
+  d841f1c82d704a1a 194,196-197
+apps/docs/app.config.ts
+  d841f1c82d704a1a 1-26
+apps/docs/content/docs/1.getting-started/.navigation.yml
+  d841f1c82d704a1a 1-2
+apps/docs/nuxt.config.ts
+  d841f1c82d704a1a 1-6
+apps/docs/content/docs/3.adapters/.navigation.yml
+  d841f1c82d704a1a 1-2
+apps/docs/content/docs/2.plugins/.navigation.yml
+  d841f1c82d704a1a 1-2
+apps/docs/content/index.md
+  d841f1c82d704a1a 1-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "82f7c586188f082e3071883f49e1d2ace778f385",
+  "prompts": {
+    "d841f1c82d704a1a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "623f4d15-2b4d-4cc8-866f-3ee8383dac17",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 869,
+      "total_deletions": 1,
+      "accepted_lines": 869,
+      "overriden_lines": 0
+    }
+  }
+}
