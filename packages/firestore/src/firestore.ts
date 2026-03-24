@@ -1,5 +1,5 @@
 import type { AppOptions } from "firebase-admin/app";
-import { getApps, initializeApp } from "firebase-admin/app";
+import { getApp, getApps, initializeApp } from "firebase-admin/app";
 import { getFirestore, initializeFirestore } from "firebase-admin/firestore";
 import type { Firestore } from "firebase-admin/firestore";
 
@@ -13,7 +13,7 @@ export interface InitFirestoreOptions extends AppOptions {
  *
  * @example
  * ```ts
- * import { initFirestore } from "@better-auth/firestore";
+ * import { initFirestore } from "@please-auth/firestore";
  *
  * const db = initFirestore({ projectId: "my-project" });
  * ```
@@ -22,12 +22,13 @@ export function initFirestore(options: InitFirestoreOptions = {}): Firestore {
   const { name, ...appOptions } = options;
   const apps = getApps();
 
-  const existing = name
-    ? apps.find((a) => a.name === name)
-    : apps[0];
-
-  if (existing) {
-    return getFirestore(existing);
+  if (apps.length > 0) {
+    const existing = name
+      ? apps.find((a) => a.name === name)
+      : getApp();
+    if (existing) {
+      return getFirestore(existing);
+    }
   }
 
   const app = initializeApp(appOptions, name);

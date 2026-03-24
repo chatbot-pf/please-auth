@@ -18,7 +18,7 @@ export interface FirestoreAdapterConfig {
 
   /**
    * Override default collection names.
-   * Keys are better-auth model names (user, session, account, verification).
+   * Keys are collection names: `users`, `sessions`, `accounts`, `verifications`.
    */
   collections?: Partial<CollectionNames>;
 

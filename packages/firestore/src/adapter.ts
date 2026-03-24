@@ -182,13 +182,27 @@ function createCustomAdapter(
           }),
         );
         const otherFilters = where.filter((w) => w.field !== "id");
-        return docs
+        let results = docs
           .filter((snap) => snap.exists)
           .map((snap) => docToRecord(snap.id, snap.data()!, mapper, select))
           .filter((r) =>
             otherFilters.length === 0 || matchesAllClientFilters(r, otherFilters),
-          )
-          .slice(offset ?? 0, limit ? (offset ?? 0) + limit : undefined) as any[];
+          );
+
+        if (sortBy) {
+          const { field, direction } = sortBy;
+          results.sort((a, b) => {
+            const aVal = a[field];
+            const bVal = b[field];
+            if (aVal === bVal) return 0;
+            if (aVal == null) return 1;
+            if (bVal == null) return -1;
+            const cmp = aVal < bVal ? -1 : 1;
+            return direction === "desc" ? -cmp : cmp;
+          });
+        }
+
+        return results.slice(offset ?? 0, limit ? (offset ?? 0) + limit : undefined) as any[];
       }
 
       // Fast path: single ID eq
