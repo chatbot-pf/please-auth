@@ -191,8 +191,10 @@ typings/
 # next.js build output
 .next
 
-# nuxt.js build output
+# nuxt.js build / generate output
 .nuxt
+.output
+.data
 
 # vuepress build output
 .vuepress/dist

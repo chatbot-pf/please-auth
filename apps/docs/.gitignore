@@ -1,0 +1,12 @@
+# Nuxt
+.nuxt/
+.output/
+dist/
+.data/
+
+# Node
+node_modules/
+
+# Misc
+.DS_Store
+*.log
