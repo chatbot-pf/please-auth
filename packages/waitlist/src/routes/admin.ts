@@ -222,7 +222,7 @@ export const bulkApprove = (options: WaitlistOptions) =>
 				const pending = (await ctx.context.adapter.findMany({
 					model: "waitlist",
 					where: [{ field: "status", value: "pending" }],
-					sortBy: { field: "position", direction: "asc" },
+					sortBy: { field: "createdAt", direction: "asc" },
 					limit: count,
 				})) as Record<string, unknown>[];
 
@@ -283,7 +283,7 @@ export const listWaitlist = (options: WaitlistOptions) =>
 					.optional(),
 				page: z.coerce.number().int().positive().optional(),
 				limit: z.coerce.number().int().positive().max(100).optional(),
-				sortBy: z.enum(["createdAt", "position", "email", "status"]).optional(),
+				sortBy: z.enum(["createdAt", "email", "status"]).optional(),
 				sortDirection: z.enum(["asc", "desc"]).optional(),
 			}),
 			use: [adminMiddleware(options)],

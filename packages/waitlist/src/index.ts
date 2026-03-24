@@ -48,7 +48,7 @@ const DEFAULT_INTERCEPT_PATHS = [
  * @example
  * ```typescript
  * import { betterAuth } from "better-auth";
- * import { waitlist } from "@guilhermejansen/better-auth-waitlist";
+ * import { waitlist } from "@please-auth/waitlist";
  *
  * export const auth = betterAuth({
  *   plugins: [

@@ -94,9 +94,9 @@ describe("waitlist plugin", async () => {
 		data: {
 			email: "admin@test.com",
 			status: "approved",
+			lookupToken: crypto.randomUUID(),
 			inviteCode: null,
 			inviteExpiresAt: null,
-			position: 0,
 			referredBy: null,
 			metadata: null,
 			approvedAt: new Date(),
@@ -118,6 +118,9 @@ describe("waitlist plugin", async () => {
 	// JOIN WAITLIST
 	// =========================================================================
 
+	// Store lookup tokens for status checks
+	const lookupTokens: Record<string, string> = {};
+
 	describe("join waitlist", () => {
 		it("should add email to waitlist with pending status", async () => {
 			const res = await client.waitlist.join({
@@ -125,8 +128,9 @@ describe("waitlist plugin", async () => {
 			});
 			expect(res.data).toBeDefined();
 			expect(res.data?.status).toBe("pending");
-			expect(res.data?.position).toBeDefined();
 			expect(res.data?.email).toBe("user1@test.com");
+			expect((res.data as Record<string, unknown>)?.lookupToken).toBeDefined();
+			lookupTokens["user1@test.com"] = (res.data as Record<string, unknown>).lookupToken as string;
 		});
 
 		it("should reject duplicate email", async () => {
@@ -173,18 +177,17 @@ describe("waitlist plugin", async () => {
 	// =========================================================================
 
 	describe("check status", () => {
-		it("should return correct status for existing email", async () => {
+		it("should return correct status for existing token", async () => {
 			const res = await client.waitlist.status({
-				email: "user1@test.com",
+				token: lookupTokens["user1@test.com"],
 			});
 			expect(res.data).toBeDefined();
 			expect((res.data as Record<string, unknown>)?.status).toBe("pending");
-			expect((res.data as Record<string, unknown>)?.position).toBeDefined();
-		});
+			});
 
-		it("should return 404 for unknown email", async () => {
+		it("should return 404 for unknown token", async () => {
 			const res = await client.waitlist.status({
-				email: "unknown@test.com",
+				token: "nonexistent-token",
 			});
 			expect(res.error).toBeDefined();
 			expect(res.error?.status).toBe(404);
@@ -446,8 +449,12 @@ describe("waitlist plugin", async () => {
 
 		it("should mark entry as registered after signup", async () => {
 			// signuptest@test.com was approved and signed up above
+			const entry = await ctx.adapter.findOne({
+				model: "waitlist",
+				where: [{ field: "email", value: "signuptest@test.com" }],
+			}) as Record<string, unknown>;
 			const status = await client.waitlist.status({
-				email: "signuptest@test.com",
+				token: entry.lookupToken as string,
 			});
 			expect((status.data as Record<string, unknown>)?.status).toBe(
 				"registered",
@@ -492,15 +499,23 @@ describe("waitlist plugin", async () => {
 			expect((res.data as Record<string, unknown>).approved).toBe(2);
 
 			// Verify they are approved
+			const bulk1Entry = await ctx.adapter.findOne({
+				model: "waitlist",
+				where: [{ field: "email", value: "bulk1@test.com" }],
+			}) as Record<string, unknown>;
 			const status1 = await client.waitlist.status({
-				email: "bulk1@test.com",
+				token: bulk1Entry.lookupToken as string,
 			});
 			expect((status1.data as Record<string, unknown>)?.status).toBe(
 				"approved",
 			);
 
+			const bulk2Entry = await ctx.adapter.findOne({
+				model: "waitlist",
+				where: [{ field: "email", value: "bulk2@test.com" }],
+			}) as Record<string, unknown>;
 			const status2 = await client.waitlist.status({
-				email: "bulk2@test.com",
+				token: bulk2Entry.lookupToken as string,
 			});
 			expect((status2.data as Record<string, unknown>)?.status).toBe(
 				"approved",
@@ -839,9 +854,9 @@ describe("waitlist plugin - require invite code", async () => {
 		data: {
 			email: "admin-ric@test.com",
 			status: "approved",
+			lookupToken: crypto.randomUUID(),
 			inviteCode: "admin-invite-code",
 			inviteExpiresAt: new Date(Date.now() + 172800 * 1000),
-			position: 0,
 			referredBy: null,
 			metadata: null,
 			approvedAt: new Date(),
@@ -1017,9 +1032,9 @@ describe("waitlist plugin - invite code expiration", async () => {
 		data: {
 			email: "admin-exp@test.com",
 			status: "approved",
+			lookupToken: crypto.randomUUID(),
 			inviteCode: null,
 			inviteExpiresAt: null,
-			position: 0,
 			referredBy: null,
 			metadata: null,
 			approvedAt: new Date(),
@@ -1231,9 +1246,9 @@ describe("waitlist plugin - OAuth/databaseHook blocking", async () => {
 			data: {
 				email: "oauth-approved@test.com",
 				status: "approved",
+				lookupToken: crypto.randomUUID(),
 				inviteCode: null,
 				inviteExpiresAt: null,
-				position: 1,
 				referredBy: null,
 				metadata: null,
 				approvedAt: new Date(),

@@ -4,9 +4,9 @@ export interface WaitlistEntry {
 	id: string;
 	email: string;
 	status: WaitlistStatus;
+	lookupToken: string;
 	inviteCode: string | null;
 	inviteExpiresAt: Date | null;
-	position: number | null;
 	referredBy: string | null;
 	metadata: string | null;
 	approvedAt: Date | null;

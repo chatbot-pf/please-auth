@@ -13,17 +13,18 @@ export const schema = {
 				required: true,
 				defaultValue: "pending",
 			},
-			inviteCode: {
+			lookupToken: {
+			type: "string",
+			required: true,
+			unique: true,
+		},
+		inviteCode: {
 				type: "string",
 				required: false,
 				unique: true,
 			},
 			inviteExpiresAt: {
 				type: "date",
-				required: false,
-			},
-			position: {
-				type: "number",
 				required: false,
 			},
 			referredBy: {

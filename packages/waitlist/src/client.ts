@@ -25,7 +25,7 @@ interface WaitlistStats {
  * @example
  * ```typescript
  * import { createAuthClient } from "better-auth/client";
- * import { waitlistClient } from "@guilhermejansen/better-auth-waitlist/client";
+ * import { waitlistClient } from "@please-auth/waitlist/client";
  *
  * const auth = createAuthClient({
  *   plugins: [waitlistClient()],
@@ -35,7 +35,7 @@ interface WaitlistStats {
  * await auth.waitlist.join({ email: "user@example.com" });
  *
  * // Check status
- * const { data } = await auth.waitlist.status({ email: "user@example.com" });
+ * const { data } = await auth.waitlist.status({ token: joinResult.lookupToken });
  * ```
  */
 export const waitlistClient = (_options?: WaitlistClientOptions) => {
@@ -60,7 +60,7 @@ export const waitlistClient = (_options?: WaitlistClientOptions) => {
 						...fetchOptions,
 					});
 				},
-				status: async (data: { email: string }, fetchOptions?: RequestInit) => {
+				status: async (data: { token: string }, fetchOptions?: RequestInit) => {
 					return $fetch("/waitlist/status", {
 						method: "GET",
 						query: data,

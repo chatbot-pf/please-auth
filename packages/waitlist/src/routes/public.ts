@@ -52,11 +52,6 @@ export const joinWaitlist = (options: WaitlistOptions) =>
 				}
 			}
 
-			// Calculate position
-			const totalCount = await ctx.context.adapter.count({
-				model: "waitlist",
-			});
-
 			// Check auto-approve
 			let status = "pending";
 			let inviteCode: string | null = null;
@@ -77,16 +72,17 @@ export const joinWaitlist = (options: WaitlistOptions) =>
 				}
 			}
 
+			const lookupToken = crypto.randomUUID();
 			const now = new Date();
 			const entry = (await ctx.context.adapter.create({
 				model: "waitlist",
 				data: {
 					email: normalizedEmail,
 					status,
+					lookupToken,
 					inviteCode,
 					inviteExpiresAt,
-					position: totalCount + 1,
-					referredBy: referredBy ?? null,
+						referredBy: referredBy ?? null,
 					metadata: metadata ? JSON.stringify(metadata) : null,
 					approvedAt,
 					rejectedAt: null,
@@ -120,7 +116,7 @@ export const joinWaitlist = (options: WaitlistOptions) =>
 				id: entry.id,
 				email: entry.email,
 				status: entry.status,
-				position: entry.position,
+				lookupToken,
 				createdAt: entry.createdAt,
 			});
 		},
@@ -132,11 +128,11 @@ export const getWaitlistStatus = (_options: WaitlistOptions) =>
 		{
 			method: "GET",
 			query: z.object({
-				email: z.email(),
+				token: z.string(),
 			}),
 			metadata: {
 				openapi: {
-					description: "Check waitlist status for an email",
+					description: "Check waitlist status using a lookup token",
 					responses: {
 						200: { description: "Waitlist status" },
 					},
@@ -144,10 +140,9 @@ export const getWaitlistStatus = (_options: WaitlistOptions) =>
 			},
 		},
 		async (ctx) => {
-			const normalizedEmail = ctx.query.email.toLowerCase();
 			const entry = (await ctx.context.adapter.findOne({
 				model: "waitlist",
-				where: [{ field: "email", value: normalizedEmail }],
+				where: [{ field: "lookupToken", value: ctx.query.token }],
 			})) as Record<string, unknown> | null;
 			if (!entry) {
 				throw APIError.from(
@@ -157,7 +152,6 @@ export const getWaitlistStatus = (_options: WaitlistOptions) =>
 			}
 			return ctx.json({
 				status: entry.status as string,
-				position: entry.position as number,
 			});
 		},
 	);

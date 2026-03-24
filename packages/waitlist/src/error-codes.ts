@@ -9,7 +9,7 @@ import { defineErrorCodes } from "@better-auth/core/utils/error-codes";
  *
  * @example
  * ```typescript
- * import { WAITLIST_ERROR_CODES } from "@guilhermejansen/better-auth-waitlist";
+ * import { WAITLIST_ERROR_CODES } from "@please-auth/waitlist";
  *
  * if (error.code === WAITLIST_ERROR_CODES.NOT_APPROVED.code) {
  *   // redirect to waitlist page
