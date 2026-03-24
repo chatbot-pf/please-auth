@@ -1,0 +1,15 @@
+{
+  "name": "@please-auth/docs",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build --extends docus",
+    "dev": "nuxt dev --extends docus",
+    "generate": "nuxt generate --extends docus",
+    "preview": "nuxt preview --extends docus"
+  },
+  "dependencies": {
+    "docus": "^5.8.1",
+    "better-sqlite3": "^12.5.0",
+    "nuxt": "^4.0.0"
+  }
+}
