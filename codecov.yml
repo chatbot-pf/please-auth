@@ -1,0 +1,30 @@
+codecov:
+  require_ci_to_pass: true
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        target: 80%
+
+comment:
+  layout: "reach,diff,flags,components"
+  behavior: default
+  require_changes: true
+
+flags:
+  unittests:
+    paths:
+      - packages/
+    carryforward: true
+
+component_management:
+  individual_components:
+    - component_id: waitlist
+      name: waitlist
+      paths:
+        - packages/waitlist/**
