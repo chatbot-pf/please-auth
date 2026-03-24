@@ -1,0 +1,46 @@
+.claude/agent-memory/review-review-issue-fixer/MEMORY.md
+  a25d606cd83091c7 1-3
+.gitignore
+  a25d606cd83091c7 237-239
+.claude/agent-memory/review-review-security-reviewer/project_firestore_adapter.md
+  a25d606cd83091c7 1-27
+.mise.toml
+  ed4ce5caa1d2d3b5 12-16
+.claude/agent-memory/review-review-security-reviewer/MEMORY.md
+  a25d606cd83091c7 1-3
+.claude/agent-memory/review-review-issue-fixer/project_firestore_adapter.md
+  a25d606cd83091c7 1-19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "8902d7d8fa2234e0400d9c86e654aa24e63c2f45",
+  "prompts": {
+    "a25d606cd83091c7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "63591ada-7b0e-4eec-824d-2198c6459ca3",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 0,
+      "accepted_lines": 66,
+      "overriden_lines": 0
+    },
+    "ed4ce5caa1d2d3b5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "632eca6b-b9a0-4e99-8a5a-8bae1578d277",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    }
+  }
+}
