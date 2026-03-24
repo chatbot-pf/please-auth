@@ -19,7 +19,7 @@
     "apps/docs": {
       "name": "@please-auth/docs",
       "dependencies": {
-        "better-sqlite3": "^12.2.0",
+        "better-sqlite3": "^12.5.0",
         "docus": "^5.8.1",
         "nuxt": "^4.0.0",
       },
