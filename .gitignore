@@ -234,6 +234,12 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+### Turborepo
+.turbo
+
+### Build output
+dist/
+
 ### VisualStudioCode template
 .vscode/*
 !.vscode/settings.json

@@ -10,6 +10,7 @@
 | Package | Description | npm |
 |---------|-------------|-----|
 | [`@please-auth/waitlist`](./packages/waitlist) | Invite 기반 대기자 명단(waitlist) 플러그인 | [![npm](https://img.shields.io/npm/v/@please-auth/waitlist)](https://www.npmjs.com/package/@please-auth/waitlist) |
+| [`@please-auth/firestore`](./packages/firestore) | Cloud Firestore 어댑터 | - |
 
 ## Quick Start
 
@@ -48,6 +49,18 @@ await auth.waitlist.join({ email: "user@example.com" });
 const { data } = await auth.waitlist.status({ token: "lookup-token" });
 ```
 
+### Firestore Adapter
+
+```typescript
+import { betterAuth } from "better-auth";
+import { firestoreAdapter } from "@please-auth/firestore";
+import { getFirestore } from "firebase-admin/firestore";
+
+const auth = betterAuth({
+  database: firestoreAdapter({ db: getFirestore() }),
+});
+```
+
 ## Development
 
 ### 사전 요구사항
@@ -60,6 +73,28 @@ const { data } = await auth.waitlist.status({ token: "lookup-token" });
 ```bash
 mise trust
 mise install
+bun install
+```
+
+### 개발
+
+```bash
+# 전체 빌드
+bun run build
+
+# 전체 타입 체크
+bun run check-types
+
+# 전체 테스트
+bun run test
+
+# 특정 패키지만
+npx turbo run build --filter=@please-auth/firestore
+```
+
+### Git Hooks 설정
+
+```bash
 mise run setup
 ```
 

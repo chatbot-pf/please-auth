@@ -1,0 +1,57 @@
+{
+  "name": "@please-auth/firestore",
+  "version": "0.1.0",
+  "description": "Firestore adapter for better-auth",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check-types": "tsc --noEmit",
+    "lint": "biome check src/",
+    "clean": "rm -rf dist .turbo"
+  },
+  "peerDependencies": {
+    "better-auth": ">=1.0.0",
+    "firebase-admin": ">=13.0.0"
+  },
+  "devDependencies": {
+    "better-auth": "^1.2.0",
+    "firebase-admin": "^13.0.0",
+    "tsup": "^8.4.0",
+    "vitest": "^3.1.0"
+  },
+  "keywords": [
+    "better-auth",
+    "firestore",
+    "firebase",
+    "adapter",
+    "auth"
+  ],
+  "license": "MIT",
+  "author": "Minsu Lee <amondnet@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chatbot-pf/better-auth",
+    "directory": "packages/firestore"
+  }
+}
