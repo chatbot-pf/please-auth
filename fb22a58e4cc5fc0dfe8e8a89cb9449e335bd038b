@@ -1,0 +1,23 @@
+packages/better-auth-waitlist/package.json
+  e71e32c6dfd77564 2-3,6,17-18,55-56,58,60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "fb22a58e4cc5fc0dfe8e8a89cb9449e335bd038b",
+  "prompts": {
+    "e71e32c6dfd77564": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a84e57ba-f6db-46e0-8fc7-8a6f84a6ac84",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 11,
+      "total_deletions": 15,
+      "accepted_lines": 9,
+      "overriden_lines": 0
+    }
+  }
+}
