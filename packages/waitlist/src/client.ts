@@ -61,12 +61,13 @@ export function waitlistClient(_options?: WaitlistClientOptions) {
           })
         },
         status: async (
-          data: { query: { token: string } },
+          data: { token: string } | { query: { token: string } },
           fetchOptions?: RequestInit,
         ) => {
+          const query = 'query' in data ? data.query : data
           return $fetch('/waitlist/status', {
             method: 'GET',
-            query: data.query,
+            query,
             ...fetchOptions,
           })
         },
