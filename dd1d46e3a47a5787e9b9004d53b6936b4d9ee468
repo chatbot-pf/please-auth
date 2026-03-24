@@ -1,0 +1,55 @@
+examples/nuxt-d1-cloudflare/lib/auth-client.ts
+  6e699329a7096d58 1-3
+examples/nuxt-d1-cloudflare/pages/index.vue
+  6e699329a7096d58 1-23
+examples/nuxt-d1-cloudflare/pages/login.vue
+  6e699329a7096d58 1-54
+examples/nuxt-d1-cloudflare/README.md
+  6e699329a7096d58 1-124
+examples/nuxt-d1-cloudflare/nuxt.config.ts
+  6e699329a7096d58 1-12
+examples/nuxt-d1-cloudflare/tsconfig.json
+  6e699329a7096d58 1-3
+examples/nuxt-d1-cloudflare/server/lib/auth.ts
+  6e699329a7096d58 1-16
+examples/nuxt-d1-cloudflare/pages/signup.vue
+  6e699329a7096d58 1-60
+examples/nuxt-d1-cloudflare/wrangler.toml
+  6e699329a7096d58 1-8
+examples/nuxt-d1-cloudflare/server/api/me.get.ts
+  6e699329a7096d58 1-14
+examples/nuxt-d1-cloudflare/.gitignore
+  6e699329a7096d58 1-17
+examples/nuxt-d1-cloudflare/server/api/auth/[...all].ts
+  6e699329a7096d58 1-6
+examples/nuxt-d1-cloudflare/.env.example
+  6e699329a7096d58 1-2
+examples/nuxt-d1-cloudflare/package.json
+  6e699329a7096d58 1-26
+examples/nuxt-d1-cloudflare/pages/dashboard.vue
+  6e699329a7096d58 1-27
+examples/nuxt-d1-cloudflare/middleware/auth.global.ts
+  6e699329a7096d58 1-13
+examples/nuxt-d1-cloudflare/app.vue
+  6e699329a7096d58 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "dd1d46e3a47a5787e9b9004d53b6936b4d9ee468",
+  "prompts": {
+    "6e699329a7096d58": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061ed7ce-53be-43e0-b71f-614cda74e256",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 468,
+      "total_deletions": 7,
+      "accepted_lines": 461,
+      "overriden_lines": 0
+    }
+  }
+}
