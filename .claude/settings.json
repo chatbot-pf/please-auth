@@ -1,0 +1,38 @@
+{
+  "enabledPlugins": {
+    "scaffold@passionfactory": true,
+    "claude-md-management@passionfactory": true,
+    "please@passionfactory": true,
+    "worktree@passionfactory": true,
+    "dev-tools@passionfactory": true,
+    "context@passionfactory": true,
+    "review@passionfactory": true,
+    "bun@passionfactory": true,
+    "github@passionfactory": true,
+    "fetch@pleaseai": true,
+    "markitdown@pleaseai": true
+  },
+  "extraKnownMarketplaces": {
+    "passionfactory": {
+      "source": {
+        "source": "github",
+        "repo": "chatbot-pf/engineering-standards"
+      },
+      "autoUpdate": true
+    },
+    "pleaseai": {
+      "source": {
+        "source": "github",
+        "repo": "pleaseai/claude-code-plugins"
+      },
+      "autoUpdate": true
+    },
+    "code-intelligence": {
+      "source": {
+        "source": "github",
+        "repo": "chatbot-pf/code-intelligence"
+      },
+      "autoUpdate": true
+    }
+  }
+}

@@ -1,0 +1,13 @@
+[tools]
+bun = "1.3.10"
+
+[tasks.commit-msg]
+description = "Validate commit message with commitlint"
+run = "bunx --bun commitlint --edit"
+
+[tasks.setup]
+description = "Set up git hooks"
+run = """
+bun install
+mise generate git-pre-commit --hook commit-msg --task commit-msg --write
+"""
