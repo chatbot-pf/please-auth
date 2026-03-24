@@ -25,7 +25,7 @@ async function findManyWithOr(
   where: CleanedWhere[],
   mapper: FieldMapper,
   opts: {
-    limit: number;
+    limit?: number;
     select?: string[];
     sortBy?: { field: string; direction: "asc" | "desc" };
     offset?: number;
@@ -111,8 +111,7 @@ function createCustomAdapter(
       }
 
       await docRef.set(docData);
-      const snap = await docRef.get();
-      return { id, ...docToRecord(id, snap.data() ?? {}, mapper) } as any;
+      return { id, ...docToRecord(id, docData, mapper) } as any;
     },
 
     async findOne({ model, where, select }) {
@@ -299,7 +298,7 @@ function createCustomAdapter(
       const updateData = recordToDoc(update, mapper);
 
       const { query, clientFilters } = applyWhereClause(collRef, where, mapper);
-      const snap = await query.get();
+      const snap = transaction ? await transaction.get(query) : await query.get();
 
       let docs = snap.docs;
       if (clientFilters.length > 0) {
@@ -309,6 +308,13 @@ function createCustomAdapter(
       }
 
       if (docs.length === 0) return 0;
+
+      if (transaction) {
+        for (const doc of docs) {
+          transaction.update(doc.ref, updateData);
+        }
+        return docs.length;
+      }
 
       return batchUpdate(
         db,
@@ -359,7 +365,7 @@ function createCustomAdapter(
       const collRef = col(model);
 
       const { query, clientFilters } = applyWhereClause(collRef, where, mapper);
-      const snap = await query.get();
+      const snap = transaction ? await transaction.get(query) : await query.get();
 
       let docs = snap.docs;
       if (clientFilters.length > 0) {
@@ -369,6 +375,13 @@ function createCustomAdapter(
       }
 
       if (docs.length === 0) return 0;
+
+      if (transaction) {
+        for (const doc of docs) {
+          transaction.delete(doc.ref);
+        }
+        return docs.length;
+      }
 
       return batchDelete(
         db,
@@ -380,6 +393,11 @@ function createCustomAdapter(
       const collRef = col(model);
 
       if (!where || where.length === 0) {
+        if (transaction) {
+          // Firestore count() aggregation not available in transactions; fetch docs
+          const snap = await transaction.get(collRef);
+          return snap.size;
+        }
         const snap = await collRef.count().get();
         return snap.data().count;
       }
@@ -388,26 +406,35 @@ function createCustomAdapter(
       const id = getIdFromWhere(where);
       if (id) {
         const docRef = collRef.doc(id);
-        const snap = await docRef.get();
+        const snap = transaction ? await transaction.get(docRef) : await docRef.get();
         return snap.exists ? 1 : 0;
       }
 
       // Fast path: ID in [...]
       const ids = getIdsFromWhere(where);
       if (ids) {
-        const docs = await Promise.all(ids.map((i) => collRef.doc(i).get()));
+        const docs = await Promise.all(
+          ids.map((i) => {
+            const ref = collRef.doc(i);
+            return transaction ? transaction.get(ref) : ref.get();
+          }),
+        );
         return docs.filter((d) => d.exists).length;
       }
 
       const { query, clientFilters } = applyWhereClause(collRef, where, mapper);
 
       if (clientFilters.length === 0) {
+        if (transaction) {
+          const snap = await transaction.get(query);
+          return snap.size;
+        }
         const snap = await query.count().get();
         return snap.data().count;
       }
 
       // Client-side count
-      const snap = await query.get();
+      const snap = transaction ? await transaction.get(query) : await query.get();
       return snap.docs.filter((doc) =>
         matchesAllClientFilters(docToRecord(doc.id, doc.data(), mapper), clientFilters),
       ).length;
@@ -462,6 +489,7 @@ export function firestoreAdapter(config: FirestoreAdapterConfig = {}): ReturnTyp
             config: {
               adapterId: "firestore-adapter",
               adapterName: "Firestore Adapter (Transaction)",
+              debugLogs,
               supportsJSON: true,
               supportsDates: true,
               supportsBooleans: true,

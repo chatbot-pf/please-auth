@@ -81,6 +81,8 @@ export function getCollectionRef(
     case "verificationtoken":
       return db.collection(collections.verifications);
     default:
+      // Passthrough for custom plugin models (e.g., twoFactor, passkey, organization).
+      // better-auth plugins introduce additional models beyond the core set.
       return db.collection(model);
   }
 }
@@ -185,8 +187,11 @@ export function applyOperator(
       return query.where(field, "<", value);
     case "lte":
       return query.where(field, "<=", value);
-    case "in":
-      return query.where(field, "in", Array.isArray(value) ? value : [value]);
+    case "in": {
+      const arr = Array.isArray(value) ? value : [value];
+      if (arr.length > 30) return null; // Firestore in limit is 30; fall back to client-side
+      return query.where(field, "in", arr);
+    }
     case "not_in":
       // Firestore supports not-in natively (max 10 values)
       if (Array.isArray(value) && value.length <= 10) {
@@ -203,7 +208,7 @@ export function applyOperator(
     case "ends_with":
       return null; // always client-side
     default:
-      return query.where(field, "==", value);
+      return null; // unknown operator: force client-side handling
   }
 }
 
@@ -285,7 +290,7 @@ export function matchesClientFilter(
     case "lte":
       return (fieldValue as number) <= (value as number);
     default:
-      return true;
+      return false;
   }
 }
 
@@ -306,17 +311,26 @@ export async function batchDelete(
   db: Firestore,
   refs: DocumentReference[],
 ): Promise<number> {
-  let count = 0;
+  let committedCount = 0;
   for (let i = 0; i < refs.length; i += 500) {
     const chunk = refs.slice(i, i + 500);
     const batch = db.batch();
     for (const ref of chunk) {
       batch.delete(ref);
     }
-    await batch.commit();
-    count += chunk.length;
+    try {
+      await batch.commit();
+      committedCount += chunk.length;
+    } catch (err) {
+      throw Object.assign(
+        new Error(
+          `batchDelete failed after committing ${committedCount} of ${refs.length} documents: ${(err as Error).message}`,
+        ),
+        { committedCount, totalCount: refs.length, cause: err },
+      );
+    }
   }
-  return count;
+  return committedCount;
 }
 
 /**
@@ -327,15 +341,24 @@ export async function batchUpdate(
   refs: DocumentReference[],
   updateData: Record<string, unknown>,
 ): Promise<number> {
-  let count = 0;
+  let committedCount = 0;
   for (let i = 0; i < refs.length; i += 500) {
     const chunk = refs.slice(i, i + 500);
     const batch = db.batch();
     for (const ref of chunk) {
       batch.update(ref, updateData);
     }
-    await batch.commit();
-    count += chunk.length;
+    try {
+      await batch.commit();
+      committedCount += chunk.length;
+    } catch (err) {
+      throw Object.assign(
+        new Error(
+          `batchUpdate failed after committing ${committedCount} of ${refs.length} documents: ${(err as Error).message}`,
+        ),
+        { committedCount, totalCount: refs.length, cause: err },
+      );
+    }
   }
-  return count;
+  return committedCount;
 }
