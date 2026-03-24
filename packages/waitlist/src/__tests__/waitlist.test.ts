@@ -179,7 +179,7 @@ describe("waitlist plugin", async () => {
 	describe("check status", () => {
 		it("should return correct status for existing token", async () => {
 			const res = await client.waitlist.status({
-				token: lookupTokens["user1@test.com"],
+				query: { token: lookupTokens["user1@test.com"]! },
 			});
 			expect(res.data).toBeDefined();
 			expect((res.data as Record<string, unknown>)?.status).toBe("pending");
@@ -187,7 +187,7 @@ describe("waitlist plugin", async () => {
 
 		it("should return 404 for unknown token", async () => {
 			const res = await client.waitlist.status({
-				token: "nonexistent-token",
+				query: { token: "nonexistent-token" },
 			});
 			expect(res.error).toBeDefined();
 			expect(res.error?.status).toBe(404);
@@ -454,7 +454,7 @@ describe("waitlist plugin", async () => {
 				where: [{ field: "email", value: "signuptest@test.com" }],
 			}) as Record<string, unknown>;
 			const status = await client.waitlist.status({
-				token: entry.lookupToken as string,
+				query: { token: entry.lookupToken as string },
 			});
 			expect((status.data as Record<string, unknown>)?.status).toBe(
 				"registered",
@@ -504,7 +504,7 @@ describe("waitlist plugin", async () => {
 				where: [{ field: "email", value: "bulk1@test.com" }],
 			}) as Record<string, unknown>;
 			const status1 = await client.waitlist.status({
-				token: bulk1Entry.lookupToken as string,
+				query: { token: bulk1Entry.lookupToken as string },
 			});
 			expect((status1.data as Record<string, unknown>)?.status).toBe(
 				"approved",
@@ -515,7 +515,7 @@ describe("waitlist plugin", async () => {
 				where: [{ field: "email", value: "bulk2@test.com" }],
 			}) as Record<string, unknown>;
 			const status2 = await client.waitlist.status({
-				token: bulk2Entry.lookupToken as string,
+				query: { token: bulk2Entry.lookupToken as string },
 			});
 			expect((status2.data as Record<string, unknown>)?.status).toBe(
 				"approved",
