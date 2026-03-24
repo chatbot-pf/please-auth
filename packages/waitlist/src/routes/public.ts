@@ -40,7 +40,7 @@ export const joinWaitlist = (options: WaitlistOptions) =>
 			}
 
 			// Check max size
-			if (options.maxWaitlistSize) {
+			if (options.maxWaitlistSize != null) {
 				const count = await ctx.context.adapter.count({
 					model: "waitlist",
 				});

@@ -105,7 +105,6 @@ export const rejectEntry = (options: WaitlistOptions) =>
 			method: "POST",
 			body: z.object({
 				email: z.email(),
-				reason: z.string().optional(),
 			}),
 			use: [adminMiddleware(options)],
 			metadata: {

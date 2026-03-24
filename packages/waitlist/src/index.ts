@@ -192,8 +192,9 @@ export const waitlist = (options?: WaitlistOptions) => {
 							}
 						}
 
-						if (opts.requireInviteCode) {
+						if (opts.requireInviteCode && email) {
 							// Require invite code in body or header
+							// Skip for OAuth callbacks (no email in body) — databaseHooks will catch it
 							const code =
 								(ctx.body?.inviteCode as string | undefined) ||
 								ctx.headers?.get("x-invite-code");
@@ -204,6 +205,7 @@ export const waitlist = (options?: WaitlistOptions) => {
 								);
 							}
 
+							const normalizedEmail = email.toLowerCase();
 							const entry = (await ctx.context.adapter.findOne({
 								model: "waitlist",
 								where: [
@@ -213,6 +215,14 @@ export const waitlist = (options?: WaitlistOptions) => {
 							})) as Record<string, unknown> | null;
 
 							if (!entry) {
+								throw APIError.from(
+									"FORBIDDEN",
+									WAITLIST_ERROR_CODES.INVALID_INVITE_CODE,
+								);
+							}
+
+							// Verify invite code belongs to the registering email
+							if (entry.email !== normalizedEmail) {
 								throw APIError.from(
 									"FORBIDDEN",
 									WAITLIST_ERROR_CODES.INVALID_INVITE_CODE,
