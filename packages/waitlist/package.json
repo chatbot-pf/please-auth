@@ -1,27 +1,28 @@
 {
   "name": "@please-auth/waitlist",
-  "version": "0.1.0",
   "type": "module",
+  "version": "0.1.0",
   "description": "Waitlist / early-access plugin for Better Auth. Intercepts all registration paths and gates sign-ups behind an invite-based waitlist.",
   "author": "Minsu Lee",
   "license": "MIT",
-  "main": "dist/index.mjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.mts",
-  "publishConfig": {
-    "access": "public"
+  "homepage": "https://github.com/chatbot-pf/please-auth#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chatbot-pf/please-auth.git",
+    "directory": "packages/waitlist"
   },
-  "scripts": {
-    "test": "vitest",
-    "coverage": "vitest run --coverage --coverage.provider=istanbul",
-    "lint": "eslint .",
-    "lint:fix": "eslint --fix .",
-    "lint:package": "publint run --strict",
-    "lint:types": "attw --profile esm-only --pack .",
-    "build": "tsdown",
-    "dev": "tsdown --watch",
-    "typecheck": "tsc --noEmit"
+  "bugs": {
+    "url": "https://github.com/chatbot-pf/please-auth/issues"
   },
+  "keywords": [
+    "better-auth",
+    "auth",
+    "waitlist",
+    "early-access",
+    "invite",
+    "plugin",
+    "typescript"
+  ],
   "exports": {
     ".": {
       "dev-source": "./src/index.ts",
@@ -34,6 +35,12 @@
       "default": "./dist/client.mjs"
     }
   },
+  "main": "dist/index.mjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.mts",
+  "publishConfig": {
+    "access": "public"
+  },
   "typesVersions": {
     "*": {
       "*": ["./dist/index.d.mts"],
@@ -41,26 +48,16 @@
     }
   },
   "files": ["dist"],
-  "keywords": [
-    "better-auth",
-    "auth",
-    "waitlist",
-    "early-access",
-    "invite",
-    "plugin",
-    "typescript"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/chatbot-pf/please-auth.git",
-    "directory": "packages/waitlist"
-  },
-  "homepage": "https://github.com/chatbot-pf/please-auth#readme",
-  "bugs": {
-    "url": "https://github.com/chatbot-pf/please-auth/issues"
-  },
-  "dependencies": {
-    "zod": "^4.3.5"
+  "scripts": {
+    "test": "vitest",
+    "coverage": "vitest run --coverage --coverage.provider=istanbul",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "lint:package": "publint run --strict",
+    "lint:types": "attw --profile esm-only --pack .",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --noEmit"
   },
   "peerDependencies": {
     "@better-auth/core": "^1.0.0",
@@ -72,6 +69,9 @@
     "nanostores": {
       "optional": true
     }
+  },
+  "dependencies": {
+    "zod": "^4.3.5"
   },
   "devDependencies": {
     "@better-auth/core": "1.5.4",
