@@ -1,55 +1,58 @@
-import { Timestamp } from "firebase-admin/firestore";
+import type { CleanedWhere } from 'better-auth/adapters'
 import type {
   CollectionReference,
-  DocumentReference,
-  Query,
-  Firestore,
   DocumentData,
-} from "firebase-admin/firestore";
-import type { CleanedWhere } from "better-auth/adapters";
+  DocumentReference,
+  Firestore,
+  Query,
+} from 'firebase-admin/firestore'
+import type { CollectionNames, NamingStrategy } from './types.js'
+import { Timestamp } from 'firebase-admin/firestore'
 import {
+
+  DEFAULT_COLLECTIONS,
+
   SNAKE_CASE_FIELD_MAP,
   SNAKE_CASE_FIELD_REVERSE_MAP,
-  DEFAULT_COLLECTIONS,
-  type CollectionNames,
-  type NamingStrategy,
-} from "./types.js";
+} from './types.js'
 
-export type { CleanedWhere } from "better-auth/adapters";
+export type { CleanedWhere } from 'better-auth/adapters'
 
 /**
  * Convert Firestore Timestamps to JS Dates recursively.
  */
 export function convertTimestamps(value: unknown): unknown {
-  if (value instanceof Timestamp) return value.toDate();
-  if (Array.isArray(value)) return value.map(convertTimestamps);
-  if (value !== null && typeof value === "object" && value.constructor === Object) {
-    const result: Record<string, unknown> = {};
+  if (value instanceof Timestamp)
+    return value.toDate()
+  if (Array.isArray(value))
+    return value.map(convertTimestamps)
+  if (value !== null && typeof value === 'object' && value.constructor === Object) {
+    const result: Record<string, unknown> = {}
     for (const [k, v] of Object.entries(value)) {
-      result[k] = convertTimestamps(v);
+      result[k] = convertTimestamps(v)
     }
-    return result;
+    return result
   }
-  return value;
+  return value
 }
 
 /**
  * Create field name mapper for a given naming strategy.
  */
 export function createFieldMapper(strategy: NamingStrategy) {
-  if (strategy === "default") {
+  if (strategy === 'default') {
     return {
       toFirestore: (field: string) => field,
       fromFirestore: (field: string) => field,
-    };
+    }
   }
   return {
     toFirestore: (field: string) => SNAKE_CASE_FIELD_MAP[field] ?? field,
     fromFirestore: (field: string) => SNAKE_CASE_FIELD_REVERSE_MAP[field] ?? field,
-  };
+  }
 }
 
-export type FieldMapper = ReturnType<typeof createFieldMapper>;
+export type FieldMapper = ReturnType<typeof createFieldMapper>
 
 /**
  * Resolve collection names from config.
@@ -58,8 +61,10 @@ export function resolveCollections(
   strategy: NamingStrategy,
   overrides?: Partial<CollectionNames>,
 ): CollectionNames {
-  return { ...DEFAULT_COLLECTIONS, ...overrides };
+  return { ...DEFAULT_COLLECTIONS, ...overrides }
 }
+
+const TRAILING_S_RE = /s$/
 
 /**
  * Get Firestore collection reference for a better-auth model name.
@@ -69,21 +74,21 @@ export function getCollectionRef(
   model: string,
   collections: CollectionNames,
 ): CollectionReference {
-  const normalized = model.toLowerCase().replace(/s$/, "");
+  const normalized = model.toLowerCase().replace(TRAILING_S_RE, '')
   switch (normalized) {
-    case "user":
-      return db.collection(collections.users);
-    case "session":
-      return db.collection(collections.sessions);
-    case "account":
-      return db.collection(collections.accounts);
-    case "verification":
-    case "verificationtoken":
-      return db.collection(collections.verifications);
+    case 'user':
+      return db.collection(collections.users)
+    case 'session':
+      return db.collection(collections.sessions)
+    case 'account':
+      return db.collection(collections.accounts)
+    case 'verification':
+    case 'verificationtoken':
+      return db.collection(collections.verifications)
     default:
       // Passthrough for custom plugin models (e.g., twoFactor, passkey, organization).
       // better-auth plugins introduce additional models beyond the core set.
-      return db.collection(model);
+      return db.collection(model)
   }
 }
 
@@ -96,16 +101,17 @@ export function docToRecord(
   mapper: FieldMapper,
   select?: string[],
 ): Record<string, unknown> {
-  const converted = convertTimestamps(data) as Record<string, unknown>;
-  const result: Record<string, unknown> = { id };
+  const converted = convertTimestamps(data) as Record<string, unknown>
+  const result: Record<string, unknown> = { id }
 
   for (const [key, value] of Object.entries(converted)) {
-    const mappedKey = mapper.fromFirestore(key);
-    if (select && !select.includes(mappedKey) && mappedKey !== "id") continue;
-    result[mappedKey] = value;
+    const mappedKey = mapper.fromFirestore(key)
+    if (select && !select.includes(mappedKey) && mappedKey !== 'id')
+      continue
+    result[mappedKey] = value
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -115,12 +121,13 @@ export function recordToDoc(
   data: Record<string, unknown>,
   mapper: FieldMapper,
 ): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
+  const result: Record<string, unknown> = {}
   for (const [key, value] of Object.entries(data)) {
-    if (key === "id") continue;
-    result[mapper.toFirestore(key)] = value;
+    if (key === 'id')
+      continue
+    result[mapper.toFirestore(key)] = value
   }
-  return result;
+  return result
 }
 
 /**
@@ -128,9 +135,9 @@ export function recordToDoc(
  */
 export function getIdFromWhere(where: CleanedWhere[]): string | null {
   const idClause = where.find(
-    (w) => w.field === "id" && w.operator === "eq",
-  );
-  return idClause ? String(idClause.value) : null;
+    w => w.field === 'id' && w.operator === 'eq',
+  )
+  return idClause ? String(idClause.value) : null
 }
 
 /**
@@ -138,11 +145,11 @@ export function getIdFromWhere(where: CleanedWhere[]): string | null {
  */
 export function getIdsFromWhere(where: CleanedWhere[]): string[] | null {
   const idClause = where.find(
-    (w) => w.field === "id" && w.operator === "in",
-  );
+    w => w.field === 'id' && w.operator === 'in',
+  )
   return idClause && Array.isArray(idClause.value)
     ? idClause.value.map(String)
-    : null;
+    : null
 }
 
 /**
@@ -150,18 +157,18 @@ export function getIdsFromWhere(where: CleanedWhere[]): string[] | null {
  */
 export function needsClientFilter(where: CleanedWhere[]): boolean {
   return where.some(
-    (w) =>
-      w.operator === "not_in" ||
-      w.operator === "ends_with" ||
-      w.operator === "contains",
-  );
+    w =>
+      w.operator === 'not_in'
+      || w.operator === 'ends_with'
+      || w.operator === 'contains',
+  )
 }
 
 /**
  * Check if any where clause uses OR connector.
  */
 export function hasOrConnector(where: CleanedWhere[]): boolean {
-  return where.some((w) => w.connector === "OR");
+  return where.some(w => w.connector === 'OR')
 }
 
 /**
@@ -171,44 +178,45 @@ export function hasOrConnector(where: CleanedWhere[]): boolean {
 export function applyOperator(
   query: Query,
   field: string,
-  operator: CleanedWhere["operator"],
+  operator: CleanedWhere['operator'],
   value: unknown,
 ): Query | null {
   switch (operator) {
-    case "eq":
-      return query.where(field, "==", value);
-    case "ne":
-      return query.where(field, "!=", value);
-    case "gt":
-      return query.where(field, ">", value);
-    case "gte":
-      return query.where(field, ">=", value);
-    case "lt":
-      return query.where(field, "<", value);
-    case "lte":
-      return query.where(field, "<=", value);
-    case "in": {
-      const arr = Array.isArray(value) ? value : [value];
-      if (arr.length > 30) return null; // Firestore in limit is 30; fall back to client-side
-      return query.where(field, "in", arr);
+    case 'eq':
+      return query.where(field, '==', value)
+    case 'ne':
+      return query.where(field, '!=', value)
+    case 'gt':
+      return query.where(field, '>', value)
+    case 'gte':
+      return query.where(field, '>=', value)
+    case 'lt':
+      return query.where(field, '<', value)
+    case 'lte':
+      return query.where(field, '<=', value)
+    case 'in': {
+      const arr = Array.isArray(value) ? value : [value]
+      if (arr.length > 30)
+        return null // Firestore in limit is 30; fall back to client-side
+      return query.where(field, 'in', arr)
     }
-    case "not_in":
+    case 'not_in':
       // Firestore supports not-in natively (max 10 values)
       if (Array.isArray(value) && value.length <= 10) {
-        return query.where(field, "not-in", value);
+        return query.where(field, 'not-in', value)
       }
-      return null; // client-side for >10 values
-    case "starts_with": {
-      const str = String(value);
+      return null // client-side for >10 values
+    case 'starts_with': {
+      const str = String(value)
       return query
-        .where(field, ">=", str)
-        .where(field, "<", str + "\uf8ff");
+        .where(field, '>=', str)
+        .where(field, '<', `${str}\uF8FF`)
     }
-    case "contains":
-    case "ends_with":
-      return null; // always client-side
+    case 'contains':
+    case 'ends_with':
+      return null // always client-side
     default:
-      return null; // unknown operator: force client-side handling
+      return null // unknown operator: force client-side handling
   }
 }
 
@@ -220,28 +228,29 @@ export function applyWhereClause(
   collection: CollectionReference,
   where: CleanedWhere[],
   mapper: FieldMapper,
-): { query: Query; clientFilters: CleanedWhere[] } {
-  let query: Query = collection;
-  const clientFilters: CleanedWhere[] = [];
+): { query: Query, clientFilters: CleanedWhere[] } {
+  let query: Query = collection
+  const clientFilters: CleanedWhere[] = []
 
   for (const clause of where) {
-    if (clause.field === "id") {
+    if (clause.field === 'id') {
       // ID-based queries are handled separately
-      clientFilters.push(clause);
-      continue;
+      clientFilters.push(clause)
+      continue
     }
 
-    const firestoreField = mapper.toFirestore(clause.field);
-    const result = applyOperator(query, firestoreField, clause.operator, clause.value);
+    const firestoreField = mapper.toFirestore(clause.field)
+    const result = applyOperator(query, firestoreField, clause.operator, clause.value)
 
     if (result) {
-      query = result;
-    } else {
-      clientFilters.push(clause);
+      query = result
+    }
+    else {
+      clientFilters.push(clause)
     }
   }
 
-  return { query, clientFilters };
+  return { query, clientFilters }
 }
 
 /**
@@ -251,46 +260,46 @@ export function matchesClientFilter(
   record: Record<string, unknown>,
   clause: CleanedWhere,
 ): boolean {
-  const fieldValue = clause.field === "id" ? record.id : record[clause.field];
-  const { value } = clause;
+  const fieldValue = clause.field === 'id' ? record.id : record[clause.field]
+  const { value } = clause
 
   switch (clause.operator) {
-    case "eq":
-      return fieldValue === value;
-    case "ne":
-      return fieldValue !== value;
-    case "not_in":
-      return Array.isArray(value) && !(value as unknown[]).includes(fieldValue);
-    case "contains":
+    case 'eq':
+      return fieldValue === value
+    case 'ne':
+      return fieldValue !== value
+    case 'not_in':
+      return Array.isArray(value) && !(value as unknown[]).includes(fieldValue)
+    case 'contains':
       return (
-        typeof fieldValue === "string" &&
-        typeof value === "string" &&
-        fieldValue.includes(value)
-      );
-    case "ends_with":
+        typeof fieldValue === 'string'
+        && typeof value === 'string'
+        && fieldValue.includes(value)
+      )
+    case 'ends_with':
       return (
-        typeof fieldValue === "string" &&
-        typeof value === "string" &&
-        fieldValue.endsWith(value)
-      );
-    case "starts_with":
+        typeof fieldValue === 'string'
+        && typeof value === 'string'
+        && fieldValue.endsWith(value)
+      )
+    case 'starts_with':
       return (
-        typeof fieldValue === "string" &&
-        typeof value === "string" &&
-        fieldValue.startsWith(value)
-      );
-    case "in":
-      return Array.isArray(value) && (value as unknown[]).includes(fieldValue);
-    case "gt":
-      return (fieldValue as number) > (value as number);
-    case "gte":
-      return (fieldValue as number) >= (value as number);
-    case "lt":
-      return (fieldValue as number) < (value as number);
-    case "lte":
-      return (fieldValue as number) <= (value as number);
+        typeof fieldValue === 'string'
+        && typeof value === 'string'
+        && fieldValue.startsWith(value)
+      )
+    case 'in':
+      return Array.isArray(value) && (value as unknown[]).includes(fieldValue)
+    case 'gt':
+      return (fieldValue as number) > (value as number)
+    case 'gte':
+      return (fieldValue as number) >= (value as number)
+    case 'lt':
+      return (fieldValue as number) < (value as number)
+    case 'lte':
+      return (fieldValue as number) <= (value as number)
     default:
-      return false;
+      return false
   }
 }
 
@@ -301,7 +310,7 @@ export function matchesAllClientFilters(
   record: Record<string, unknown>,
   filters: CleanedWhere[],
 ): boolean {
-  return filters.every((f) => matchesClientFilter(record, f));
+  return filters.every(f => matchesClientFilter(record, f))
 }
 
 /**
@@ -311,26 +320,27 @@ export async function batchDelete(
   db: Firestore,
   refs: DocumentReference[],
 ): Promise<number> {
-  let committedCount = 0;
+  let committedCount = 0
   for (let i = 0; i < refs.length; i += 500) {
-    const chunk = refs.slice(i, i + 500);
-    const batch = db.batch();
+    const chunk = refs.slice(i, i + 500)
+    const batch = db.batch()
     for (const ref of chunk) {
-      batch.delete(ref);
+      batch.delete(ref)
     }
     try {
-      await batch.commit();
-      committedCount += chunk.length;
-    } catch (err) {
+      await batch.commit()
+      committedCount += chunk.length
+    }
+    catch (err) {
       throw Object.assign(
         new Error(
           `batchDelete failed after committing ${committedCount} of ${refs.length} documents: ${(err as Error).message}`,
         ),
         { committedCount, totalCount: refs.length, cause: err },
-      );
+      )
     }
   }
-  return committedCount;
+  return committedCount
 }
 
 /**
@@ -341,24 +351,25 @@ export async function batchUpdate(
   refs: DocumentReference[],
   updateData: Record<string, unknown>,
 ): Promise<number> {
-  let committedCount = 0;
+  let committedCount = 0
   for (let i = 0; i < refs.length; i += 500) {
-    const chunk = refs.slice(i, i + 500);
-    const batch = db.batch();
+    const chunk = refs.slice(i, i + 500)
+    const batch = db.batch()
     for (const ref of chunk) {
-      batch.update(ref, updateData);
+      batch.update(ref, updateData)
     }
     try {
-      await batch.commit();
-      committedCount += chunk.length;
-    } catch (err) {
+      await batch.commit()
+      committedCount += chunk.length
+    }
+    catch (err) {
       throw Object.assign(
         new Error(
           `batchUpdate failed after committing ${committedCount} of ${refs.length} documents: ${(err as Error).message}`,
         ),
         { committedCount, totalCount: refs.length, cause: err },
-      );
+      )
     }
   }
-  return committedCount;
+  return committedCount
 }

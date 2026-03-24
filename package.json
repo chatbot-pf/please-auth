@@ -14,9 +14,12 @@
     "clean": "turbo run clean"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^7.7.3",
     "@commitlint/cli": "^20.1.0",
     "@commitlint/config-conventional": "^20.0.0",
     "@commitlint/config-workspace-scopes": "^20.4.3",
+    "eslint": "^10.1.0",
+    "publint": "^0.3.18",
     "turbo": "^2.5.0",
     "typescript": "^5.8.0"
   },

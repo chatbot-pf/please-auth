@@ -1,7 +1,7 @@
-export { firestoreAdapter } from "./adapter.js";
-export { initFirestore, type InitFirestoreOptions } from "./firestore.js";
+export { firestoreAdapter } from './adapter.js'
+export { initFirestore, type InitFirestoreOptions } from './firestore.js'
 export type {
+  CollectionNames,
   FirestoreAdapterConfig,
   NamingStrategy,
-  CollectionNames,
-} from "./types.js";
+} from './types.js'

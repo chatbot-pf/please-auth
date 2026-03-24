@@ -1,10 +1,10 @@
-import type { AppOptions } from "firebase-admin/app";
-import { getApp, getApps, initializeApp } from "firebase-admin/app";
-import { getFirestore, initializeFirestore } from "firebase-admin/firestore";
-import type { Firestore } from "firebase-admin/firestore";
+import type { AppOptions } from 'firebase-admin/app'
+import type { Firestore } from 'firebase-admin/firestore'
+import { getApps, initializeApp } from 'firebase-admin/app'
+import { getFirestore, initializeFirestore } from 'firebase-admin/firestore'
 
 export interface InitFirestoreOptions extends AppOptions {
-  name?: string;
+  name?: string
 }
 
 /**
@@ -19,18 +19,18 @@ export interface InitFirestoreOptions extends AppOptions {
  * ```
  */
 export function initFirestore(options: InitFirestoreOptions = {}): Firestore {
-  const { name, ...appOptions } = options;
-  const apps = getApps();
+  const { name, ...appOptions } = options
+  const apps = getApps()
 
   if (apps.length > 0) {
     const existing = name
-      ? apps.find((a) => a.name === name)
-      : apps.find((a) => a.name === "[DEFAULT]") ?? apps[0];
+      ? apps.find(a => a.name === name)
+      : apps.find(a => a.name === '[DEFAULT]') ?? apps[0]
     if (existing) {
-      return getFirestore(existing);
+      return getFirestore(existing)
     }
   }
 
-  const app = initializeApp(appOptions, name);
-  return initializeFirestore(app);
+  const app = initializeApp(appOptions, name)
+  return initializeFirestore(app)
 }

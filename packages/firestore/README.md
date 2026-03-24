@@ -13,13 +13,13 @@ bun add better-auth firebase-admin
 ## 사용법
 
 ```ts
-import { betterAuth } from "better-auth";
-import { firestoreAdapter } from "@please-auth/firestore";
-import { getFirestore } from "firebase-admin/firestore";
+import { firestoreAdapter } from '@please-auth/firestore'
+import { betterAuth } from 'better-auth'
+import { getFirestore } from 'firebase-admin/firestore'
 
 const auth = betterAuth({
   database: firestoreAdapter({ db: getFirestore() }),
-});
+})
 ```
 
 ### `initFirestore` 헬퍼
@@ -27,13 +27,13 @@ const auth = betterAuth({
 서버리스 환경에서 안전하게 Firestore 인스턴스를 초기화/재사용합니다.
 
 ```ts
-import { firestoreAdapter, initFirestore } from "@please-auth/firestore";
+import { firestoreAdapter, initFirestore } from '@please-auth/firestore'
 
-const db = initFirestore({ projectId: "my-project" });
+const db = initFirestore({ projectId: 'my-project' })
 
 const auth = betterAuth({
   database: firestoreAdapter({ db }),
-});
+})
 ```
 
 ## 설정 옵션
@@ -44,19 +44,19 @@ firestoreAdapter({
   db: getFirestore(),
 
   // 필드 네이밍 전략: "default" (camelCase) | "snake_case"
-  namingStrategy: "default",
+  namingStrategy: 'default',
 
   // 컬렉션 이름 커스텀
   collections: {
-    users: "users",
-    sessions: "sessions",
-    accounts: "accounts",
-    verifications: "verifications",
+    users: 'users',
+    sessions: 'sessions',
+    accounts: 'accounts',
+    verifications: 'verifications',
   },
 
   // 디버그 로깅
   debugLogs: false,
-});
+})
 ```
 
 ### `namingStrategy`
