@@ -1,15 +1,61 @@
-# template
+# @please-auth
 
-열정팩토리에서 사용하는 기본 템플릿입니다.
+[![CI](https://github.com/chatbot-pf/please-auth/actions/workflows/ci.yml/badge.svg)](https://github.com/chatbot-pf/please-auth/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/chatbot-pf/please-auth/graph/badge.svg)](https://codecov.io/gh/chatbot-pf/please-auth)
 
+[Better Auth](https://www.better-auth.com/) 플러그인 모음입니다.
 
-## 시작하기
+## Packages
 
-### Git Hooks 설정
+| Package | Description | npm |
+|---------|-------------|-----|
+| [`@please-auth/waitlist`](./packages/waitlist) | Invite 기반 대기자 명단(waitlist) 플러그인 | [![npm](https://img.shields.io/npm/v/@please-auth/waitlist)](https://www.npmjs.com/package/@please-auth/waitlist) |
 
-[mise](https://mise.jdx.dev/)를 사용하여 Git hooks를 관리합니다.
+## Quick Start
 
-> [mise](https://mise.jdx.dev/getting-started.html)가 설치되어 있어야 합니다. `mise install`로 bun 등 필요한 도구가 자동으로 설치됩니다.
+### Waitlist (Server)
+
+```typescript
+import { betterAuth } from "better-auth";
+import { waitlist } from "@please-auth/waitlist";
+
+export const auth = betterAuth({
+  plugins: [
+    waitlist({
+      requireInviteCode: true,
+      sendInviteEmail: async ({ email, inviteCode }) => {
+        await sendEmail({ to: email, subject: "You're in!", body: inviteCode });
+      },
+    }),
+  ],
+});
+```
+
+### Waitlist (Client)
+
+```typescript
+import { createAuthClient } from "better-auth/client";
+import { waitlistClient } from "@please-auth/waitlist/client";
+
+const auth = createAuthClient({
+  plugins: [waitlistClient()],
+});
+
+// 대기자 명단에 등록
+await auth.waitlist.join({ email: "user@example.com" });
+
+// 상태 확인
+const { data } = await auth.waitlist.status({ token: "lookup-token" });
+```
+
+## Development
+
+### 사전 요구사항
+
+- [mise](https://mise.jdx.dev/) (도구 버전 관리)
+- [Bun](https://bun.sh/) (packageManager로 사용)
+
+### 설정
 
 ```bash
 mise trust
@@ -17,37 +63,27 @@ mise install
 mise run setup
 ```
 
-`mise run setup`은 `bun install`로 의존성을 설치한 후, `commit-msg` hook을 설치하여 커밋 시 [commitlint](https://commitlint.js.org/)가 자동으로 실행됩니다.
+`mise run setup`은 의존성을 설치하고 `commit-msg` hook을 설정하여 [commitlint](https://commitlint.js.org/)가 자동으로 실행됩니다.
 
-
-## Claude Code 설정
-
-1. 프로젝트 디렉토리에서 Claude Code를 실행합니다:
+### 주요 명령어
 
 ```bash
-claude
+# 테스트
+bun run --filter '*' test
+
+# 커버리지
+bun run --filter '*' coverage
+
+# 빌드
+bun run --filter '*' build
+
+# 타입 체크
+bun run --filter '*' typecheck
+
+# 린트
+bun run --filter '*' lint
 ```
 
-2. 설정 스킬을 실행하여 이 프로젝트에 맞게 Claude Code를 구성합니다:
+## License
 
-```
-/claude-code-setup:claude-code-setup
-```
-
-기술 스택을 자동으로 감지하고, 플러그인을 추천하며, 최적의 설정으로 `.claude/settings.json`을 생성합니다.
-
-
-## 도구
-
-- [Cubic](https://www.cubic.dev/)
-- [SonarCloud](https://sonarcloud.io/)
-
-
-## 참조
-
-- [engineering-standards](https://github.com/chatbot-pf/engineering-standards/)
-- [claude-code-plugins](https://github.com/pleaseai/claude-code-plugins)
-- [code-intelligence](https://github.com/chatbot-pf/code-intelligence)
-- [code-style](https://github.com/pleaseai/code-style)
-- [release-please-action](https://github.com/googleapis/release-please-action)
-- [commitlint](https://commitlint.js.org/)
+MIT
