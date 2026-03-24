@@ -1,0 +1,23 @@
+packages/waitlist/src/client.ts
+  88a929648d898361 64,67,70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "7288421f8e42833786fe24c09e4a964337802c30",
+  "prompts": {
+    "88a929648d898361": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "18b6cd19-06c2-4f3a-8cff-3623e5a30c25",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 2,
+      "accepted_lines": 3,
+      "overriden_lines": 0
+    }
+  }
+}
