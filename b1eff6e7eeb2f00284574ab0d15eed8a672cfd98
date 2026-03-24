@@ -1,0 +1,38 @@
+packages/firestore/src/utils.ts
+  a25d606cd83091c7 84-85,190-194,211,293,314,321-331,333,344,351-360,363
+packages/firestore/src/adapter.ts
+  a25d606cd83091c7 28,114,301,312-317,368,379-384,396-400,409,416-421,428-431,437,492
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "b1eff6e7eeb2f00284574ab0d15eed8a672cfd98",
+  "prompts": {
+    "a25d606cd83091c7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "63591ada-7b0e-4eec-824d-2198c6459ca3",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 129,
+      "total_deletions": 26,
+      "accepted_lines": 123,
+      "overriden_lines": 0
+    },
+    "ed4ce5caa1d2d3b5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "632eca6b-b9a0-4e99-8a5a-8bae1578d277",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    }
+  }
+}
