@@ -182,16 +182,18 @@ function createCustomAdapter(
           }),
         );
         const otherFilters = where.filter((w) => w.field !== "id");
-        let results = docs
+        // Sort using full (unprojected) records so that sortBy works even when
+        // the sort field is not included in `select`.
+        let fullResults = docs
           .filter((snap) => snap.exists)
-          .map((snap) => docToRecord(snap.id, snap.data()!, mapper, select))
+          .map((snap) => docToRecord(snap.id, snap.data()!, mapper))
           .filter((r) =>
             otherFilters.length === 0 || matchesAllClientFilters(r, otherFilters),
           );
 
         if (sortBy) {
           const { field, direction } = sortBy;
-          results.sort((a, b) => {
+          fullResults.sort((a, b) => {
             const aVal = a[field];
             const bVal = b[field];
             if (aVal === bVal) return 0;
@@ -201,6 +203,17 @@ function createCustomAdapter(
             return direction === "desc" ? -cmp : cmp;
           });
         }
+
+        // Apply projection after sorting
+        let results = select
+          ? fullResults.map((r) => {
+              const projected: Record<string, unknown> = {};
+              for (const key of select) {
+                projected[key] = r[key];
+              }
+              return projected;
+            })
+          : fullResults;
 
         return results.slice(offset ?? 0, limit ? (offset ?? 0) + limit : undefined) as any[];
       }

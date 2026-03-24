@@ -25,7 +25,7 @@ export function initFirestore(options: InitFirestoreOptions = {}): Firestore {
   if (apps.length > 0) {
     const existing = name
       ? apps.find((a) => a.name === name)
-      : getApp();
+      : apps[0];
     if (existing) {
       return getFirestore(existing);
     }
