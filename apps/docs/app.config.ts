@@ -12,9 +12,6 @@ export default defineAppConfig({
   navigation: {
     sub: 'aside',
   },
-  socials: {
-    github: 'https://github.com/chatbot-pf/please-auth',
-  },
   toc: {
     title: 'On this page',
   },
