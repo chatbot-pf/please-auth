@@ -9,5 +9,9 @@ run = "bunx --bun commitlint --edit"
 description = "Set up git hooks"
 run = """
 bun install
-mise generate git-pre-commit --hook commit-msg --task commit-msg --write
+if [ -d .git ]; then
+  mise generate git-pre-commit --hook commit-msg --task commit-msg --write
+else
+  echo "Skipping hook setup (worktree detected)"
+fi
 """
