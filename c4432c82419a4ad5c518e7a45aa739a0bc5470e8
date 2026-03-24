@@ -1,0 +1,42 @@
+eslint.config.mjs
+  a25d606cd83091c7 1-5
+packages/firestore/src/utils.ts
+  a25d606cd83091c7 67-68,77
+packages/firestore/src/adapter.ts
+  a25d606cd83091c7 37,40
+packages/firestore/package.json
+  a25d606cd83091c7 44-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "c4432c82419a4ad5c518e7a45aa739a0bc5470e8",
+  "prompts": {
+    "a25d606cd83091c7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "63591ada-7b0e-4eec-824d-2198c6459ca3",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 15,
+      "total_deletions": 6,
+      "accepted_lines": 76,
+      "overriden_lines": 0
+    },
+    "ed4ce5caa1d2d3b5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "632eca6b-b9a0-4e99-8a5a-8bae1578d277",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    }
+  }
+}
