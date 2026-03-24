@@ -92,13 +92,13 @@ export const waitlist = (options?: WaitlistOptions) => {
 										return;
 
 									// No email means we can't check waitlist
-									if (!user.email) return;
+									if (!user.email) return false;
 
 									const email = user.email.toLowerCase();
 
-									if (!ctx) return;
+									if (!ctx) return false;
 									const adapter = ctx.context?.adapter;
-									if (!adapter) return;
+									if (!adapter) return false;
 
 									const entry = await adapter.findOne({
 										model: "waitlist",
@@ -116,11 +116,17 @@ export const waitlist = (options?: WaitlistOptions) => {
 								async after(user, ctx) {
 									if (opts.enabled === false) return;
 									if (!user.email) return;
-									if (!ctx) return;
+									if (!ctx) {
+										console.error('[waitlist] after hook: ctx is missing, cannot mark user as registered');
+										return;
+									}
 
 									const email = user.email.toLowerCase();
 									const adapter = ctx.context?.adapter;
-									if (!adapter) return;
+									if (!adapter) {
+										console.error('[waitlist] after hook: adapter is missing, cannot mark user as registered');
+										return;
+									}
 
 									// Mark waitlist entry as registered
 									const entry = await adapter.findOne({

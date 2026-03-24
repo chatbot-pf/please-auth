@@ -57,7 +57,7 @@ export const approveEntry = (options: WaitlistOptions) =>
 					WAITLIST_ERROR_CODES.WAITLIST_ENTRY_NOT_FOUND,
 				);
 			}
-			if (entry.status === "registered") {
+			if (entry.status !== "pending") {
 				throw APIError.from(
 					"BAD_REQUEST",
 					WAITLIST_ERROR_CODES.ALREADY_REGISTERED,
