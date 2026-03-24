@@ -1,0 +1,36 @@
+packages/waitlist/src/__tests__/waitlist.test.ts
+  a25d606cd83091c7 182,190,457,507,518
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "c77070cd84c9c30d54111ddced1fafeb5fce9c1f",
+  "prompts": {
+    "a25d606cd83091c7": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "63591ada-7b0e-4eec-824d-2198c6459ca3",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 5,
+      "total_deletions": 5,
+      "accepted_lines": 68,
+      "overriden_lines": 0
+    },
+    "ed4ce5caa1d2d3b5": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "632eca6b-b9a0-4e99-8a5a-8bae1578d277",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    }
+  }
+}
