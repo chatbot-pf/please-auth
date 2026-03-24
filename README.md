@@ -9,8 +9,8 @@
 
 | Package | Description | npm |
 |---------|-------------|-----|
-| [`@please-auth/waitlist`](./packages/waitlist) | Invite 기반 대기자 명단(waitlist) 플러그인 | [![npm](https://img.shields.io/npm/v/@please-auth/waitlist)](https://www.npmjs.com/package/@please-auth/waitlist) |
-| [`@please-auth/firestore`](./packages/firestore) | Cloud Firestore 어댑터 | - |
+| [`@please-auth/waitlist`](./packages/waitlist#readme) | Invite 기반 대기자 명단(waitlist) 플러그인 | [![npm](https://img.shields.io/npm/v/@please-auth/waitlist)](https://www.npmjs.com/package/@please-auth/waitlist) |
+| [`@please-auth/firestore`](./packages/firestore#readme) | Cloud Firestore 어댑터 | - |
 
 ## Quick Start
 
