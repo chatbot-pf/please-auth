@@ -1,0 +1,27 @@
+apps/docs/package.json
+  d841f1c82d704a1a 12
+apps/docs/content/docs/1.getting-started/2.installation.md
+  d841f1c82d704a1a 33
+apps/docs/content/docs/3.adapters/1.firestore.md
+  d841f1c82d704a1a 26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "ac33b38fdd547d3bcec2f4d943e5873c94359387",
+  "prompts": {
+    "d841f1c82d704a1a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "623f4d15-2b4d-4cc8-866f-3ee8383dac17",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 55,
+      "total_deletions": 2,
+      "accepted_lines": 55,
+      "overriden_lines": 0
+    }
+  }
+}
