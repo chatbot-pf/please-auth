@@ -1,0 +1,29 @@
+examples/nuxt-d1-cloudflare/nuxt.config.ts
+  6e699329a7096d58 9
+examples/nuxt-d1-cloudflare/README.md
+  6e699329a7096d58 82-91,94
+examples/nuxt-d1-cloudflare/server/lib/auth.ts
+  6e699329a7096d58 8-11
+examples/nuxt-d1-cloudflare/middleware/auth.global.ts
+  6e699329a7096d58 4-7,10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "030676101dcef9426ca636e0a04b01699c425b27",
+  "prompts": {
+    "6e699329a7096d58": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "061ed7ce-53be-43e0-b71f-614cda74e256",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 43,
+      "total_deletions": 5,
+      "accepted_lines": 43,
+      "overriden_lines": 0
+    }
+  }
+}
