@@ -240,3 +240,6 @@ Temporary Items
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# please plugin runtime state
+.please/state/
