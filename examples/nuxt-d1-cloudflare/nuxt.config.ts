@@ -6,7 +6,7 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
-    betterAuthSecret: process.env.BETTER_AUTH_SECRET || 'development-secret-change-me',
+    betterAuthSecret: process.env.BETTER_AUTH_SECRET || '',
     betterAuthUrl: process.env.BETTER_AUTH_URL || 'http://localhost:3000',
   },
 })

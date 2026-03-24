@@ -79,10 +79,19 @@ Better Auth auto-detects D1 bindings — just pass `env.DB` directly to the `dat
 
 ```ts
 // server/lib/auth.ts
-betterAuth({
-  database: cloudflare.env.DB, // auto-detected as D1
-})
+export function getAuth(event: H3Event) {
+  const { cloudflare } = event.context
+  const config = useRuntimeConfig(event)
+
+  return betterAuth({
+    database: cloudflare.env.DB, // auto-detected as D1
+    secret: config.betterAuthSecret,
+    baseURL: config.betterAuthUrl,
+  })
+}
 ```
+
+Because Cloudflare Pages exposes the D1 binding only on the incoming request context, `betterAuth` is instantiated per request inside `getAuth(event)` rather than at module level.
 
 No need for `kysely-d1` or any extra adapter package. Better Auth uses its built-in `D1SqliteDialect` internally.
 
