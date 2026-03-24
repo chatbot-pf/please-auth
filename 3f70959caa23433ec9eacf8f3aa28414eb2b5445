@@ -1,0 +1,23 @@
+packages/waitlist/package.json
+  e71e32c6dfd77564 56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.17",
+  "base_commit_sha": "3f70959caa23433ec9eacf8f3aa28414eb2b5445",
+  "prompts": {
+    "e71e32c6dfd77564": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a84e57ba-f6db-46e0-8fc7-8a6f84a6ac84",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee <amond@amond.net>",
+      "messages": [],
+      "total_additions": 30,
+      "total_deletions": 1,
+      "accepted_lines": 30,
+      "overriden_lines": 0
+    }
+  }
+}
