@@ -35,7 +35,7 @@ interface WaitlistStats {
  * await auth.waitlist.join({ email: "user@example.com" });
  *
  * // Check status
- * const { data } = await auth.waitlist.status({ token: joinResult.lookupToken });
+ * const { data } = await auth.waitlist.status({ query: { token: joinResult.lookupToken } });
  * ```
  */
 export function waitlistClient(_options?: WaitlistClientOptions) {
