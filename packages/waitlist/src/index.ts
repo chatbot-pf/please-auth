@@ -1,38 +1,38 @@
-import { createAuthMiddleware } from "@better-auth/core/api";
-import { APIError } from "@better-auth/core/error";
-import type { BetterAuthPlugin } from "better-auth";
-import { mergeSchema } from "better-auth/db";
-import { WAITLIST_ERROR_CODES } from "./error-codes";
+import type { BetterAuthPlugin } from 'better-auth'
+import type { WaitlistOptions } from './types'
+import { createAuthMiddleware } from '@better-auth/core/api'
+import { APIError } from '@better-auth/core/error'
+import { mergeSchema } from 'better-auth/db'
+import { WAITLIST_ERROR_CODES } from './error-codes'
 import {
-	approveEntry,
-	bulkApprove,
-	getWaitlistStats,
-	listWaitlist,
-	rejectEntry,
-} from "./routes/admin";
+  approveEntry,
+  bulkApprove,
+  getWaitlistStats,
+  listWaitlist,
+  rejectEntry,
+} from './routes/admin'
 import {
-	getWaitlistStatus,
-	joinWaitlist,
-	verifyInviteCode,
-} from "./routes/public";
-import { schema } from "./schema";
-import type { WaitlistOptions } from "./types";
+  getWaitlistStatus,
+  joinWaitlist,
+  verifyInviteCode,
+} from './routes/public'
+import { schema } from './schema'
 
-export { WAITLIST_ERROR_CODES } from "./error-codes";
-export type { WaitlistOptions, WaitlistEntry, WaitlistStatus } from "./types";
+export { WAITLIST_ERROR_CODES } from './error-codes'
+export type { WaitlistEntry, WaitlistOptions, WaitlistStatus } from './types'
 
 const DEFAULT_INTERCEPT_PATHS = [
-	"/sign-up/email",
-	"/callback/",
-	"/oauth2/callback/",
-	"/magic-link/verify",
-	"/sign-in/email-otp",
-	"/email-otp/verify-email",
-	"/phone-number/verify",
-	"/sign-in/anonymous",
-	"/one-tap/callback",
-	"/siwe/verify",
-];
+  '/sign-up/email',
+  '/callback/',
+  '/oauth2/callback/',
+  '/magic-link/verify',
+  '/sign-in/email-otp',
+  '/email-otp/verify-email',
+  '/phone-number/verify',
+  '/sign-in/anonymous',
+  '/one-tap/callback',
+  '/siwe/verify',
+]
 
 /**
  * Waitlist plugin for Better Auth.
@@ -62,206 +62,215 @@ const DEFAULT_INTERCEPT_PATHS = [
  * });
  * ```
  */
-export const waitlist = (options?: WaitlistOptions) => {
-	const opts: WaitlistOptions = {
-		enabled: true,
-		requireInviteCode: false,
-		inviteCodeExpiration: 172800,
-		skipAnonymous: false,
-		adminRoles: ["admin"],
-		...options,
-	};
+export function waitlist(options?: WaitlistOptions) {
+  const opts: WaitlistOptions = {
+    enabled: true,
+    requireInviteCode: false,
+    inviteCodeExpiration: 172800,
+    skipAnonymous: false,
+    adminRoles: ['admin'],
+    ...options,
+  }
 
-	return {
-		id: "waitlist",
+  return {
+    id: 'waitlist',
 
-		init() {
-			return {
-				options: {
-					databaseHooks: {
-						user: {
-							create: {
-								async before(user, ctx) {
-									if (opts.enabled === false) return;
+    init() {
+      return {
+        options: {
+          databaseHooks: {
+            user: {
+              create: {
+                async before(user, ctx) {
+                  if (opts.enabled === false)
+                    return
 
-									// Skip anonymous users if configured
-									if (
-										opts.skipAnonymous &&
-										(user as Record<string, unknown>).isAnonymous
-									)
-										return;
+                  // Skip anonymous users if configured
+                  if (
+                    opts.skipAnonymous
+                    && (user as Record<string, unknown>).isAnonymous
+                  ) {
+                    return
+                  }
 
-									// No email means we can't check waitlist
-									if (!user.email) return false;
+                  // No email means we can't check waitlist
+                  if (!user.email)
+                    return false
 
-									const email = user.email.toLowerCase();
+                  const email = user.email.toLowerCase()
 
-									if (!ctx) return false;
-									const adapter = ctx.context?.adapter;
-									if (!adapter) return false;
+                  if (!ctx)
+                    return false
+                  const adapter = ctx.context?.adapter
+                  if (!adapter)
+                    return false
 
-									const entry = await adapter.findOne({
-										model: "waitlist",
-										where: [
-											{ field: "email", value: email },
-											{ field: "status", value: "approved" },
-										],
-									});
+                  const entry = await adapter.findOne({
+                    model: 'waitlist',
+                    where: [
+                      { field: 'email', value: email },
+                      { field: 'status', value: 'approved' },
+                    ],
+                  })
 
-									// If no approved entry, block user creation
-									if (!entry) {
-										return false;
-									}
-								},
-								async after(user, ctx) {
-									if (opts.enabled === false) return;
-									if (!user.email) return;
-									if (!ctx) {
-										console.error('[waitlist] after hook: ctx is missing, cannot mark user as registered');
-										return;
-									}
+                  // If no approved entry, block user creation
+                  if (!entry) {
+                    return false
+                  }
+                },
+                async after(user, ctx) {
+                  if (opts.enabled === false)
+                    return
+                  if (!user.email)
+                    return
+                  if (!ctx) {
+                    console.error('[waitlist] after hook: ctx is missing, cannot mark user as registered')
+                    return
+                  }
 
-									const email = user.email.toLowerCase();
-									const adapter = ctx.context?.adapter;
-									if (!adapter) {
-										console.error('[waitlist] after hook: adapter is missing, cannot mark user as registered');
-										return;
-									}
+                  const email = user.email.toLowerCase()
+                  const adapter = ctx.context?.adapter
+                  if (!adapter) {
+                    console.error('[waitlist] after hook: adapter is missing, cannot mark user as registered')
+                    return
+                  }
 
-									// Mark waitlist entry as registered
-									const entry = await adapter.findOne({
-										model: "waitlist",
-										where: [{ field: "email", value: email }],
-									});
+                  // Mark waitlist entry as registered
+                  const entry = await adapter.findOne({
+                    model: 'waitlist',
+                    where: [{ field: 'email', value: email }],
+                  })
 
-									if (entry) {
-										await adapter.update({
-											model: "waitlist",
-											where: [{ field: "email", value: email }],
-											update: {
-												status: "registered",
-												registeredAt: new Date(),
-												updatedAt: new Date(),
-											},
-										});
-									}
-								},
-							},
-						},
-					},
-				},
-			};
-		},
+                  if (entry) {
+                    await adapter.update({
+                      model: 'waitlist',
+                      where: [{ field: 'email', value: email }],
+                      update: {
+                        status: 'registered',
+                        registeredAt: new Date(),
+                        updatedAt: new Date(),
+                      },
+                    })
+                  }
+                },
+              },
+            },
+          },
+        },
+      }
+    },
 
-		endpoints: {
-			joinWaitlist: joinWaitlist(opts),
-			getWaitlistStatus: getWaitlistStatus(opts),
-			verifyInviteCode: verifyInviteCode(opts),
-			approveEntry: approveEntry(opts),
-			rejectEntry: rejectEntry(opts),
-			bulkApprove: bulkApprove(opts),
-			listWaitlist: listWaitlist(opts),
-			getWaitlistStats: getWaitlistStats(opts),
-		},
+    endpoints: {
+      joinWaitlist: joinWaitlist(opts),
+      getWaitlistStatus: getWaitlistStatus(opts),
+      verifyInviteCode: verifyInviteCode(opts),
+      approveEntry: approveEntry(opts),
+      rejectEntry: rejectEntry(opts),
+      bulkApprove: bulkApprove(opts),
+      listWaitlist: listWaitlist(opts),
+      getWaitlistStats: getWaitlistStats(opts),
+    },
 
-		hooks: {
-			before: [
-				{
-					matcher(context: { path?: string }) {
-						if (opts.enabled === false) return false;
-						const paths = opts.interceptPaths ?? DEFAULT_INTERCEPT_PATHS;
-						return paths.some(
-							(p) => context.path === p || context.path?.startsWith(p),
-						);
-					},
-					handler: createAuthMiddleware(async (ctx) => {
-						// Extract email from request body
-						const email = ctx.body?.email as string | undefined;
+    hooks: {
+      before: [
+        {
+          matcher(context: { path?: string }) {
+            if (opts.enabled === false)
+              return false
+            const paths = opts.interceptPaths ?? DEFAULT_INTERCEPT_PATHS
+            return paths.some(
+              p => context.path === p || context.path?.startsWith(p),
+            )
+          },
+          handler: createAuthMiddleware(async (ctx) => {
+            // Extract email from request body
+            const email = ctx.body?.email as string | undefined
 
-						if (email) {
-							const normalizedEmail = email.toLowerCase();
+            if (email) {
+              const normalizedEmail = email.toLowerCase()
 
-							// Check if this is a login (user already exists) vs signup
-							const existingUser =
-								await ctx.context.internalAdapter.findUserByEmail(
-									normalizedEmail,
-								);
-							if (existingUser) {
-								// Existing user -- this is a login, let it through
-								return;
-							}
-						}
+              // Check if this is a login (user already exists) vs signup
+              const existingUser
+                = await ctx.context.internalAdapter.findUserByEmail(
+                  normalizedEmail,
+                )
+              if (existingUser) {
+                // Existing user -- this is a login, let it through
+                return
+              }
+            }
 
-						if (opts.requireInviteCode && email) {
-							// Require invite code in body or header
-							// Skip for OAuth callbacks (no email in body) — databaseHooks will catch it
-							const code =
-								(ctx.body?.inviteCode as string | undefined) ||
-								ctx.headers?.get("x-invite-code");
-							if (!code) {
-								throw APIError.from(
-									"FORBIDDEN",
-									WAITLIST_ERROR_CODES.INVITE_CODE_REQUIRED,
-								);
-							}
+            if (opts.requireInviteCode && email) {
+              // Require invite code in body or header
+              // Skip for OAuth callbacks (no email in body) — databaseHooks will catch it
+              const code
+                = (ctx.body?.inviteCode as string | undefined)
+                  || ctx.headers?.get('x-invite-code')
+              if (!code) {
+                throw APIError.from(
+                  'FORBIDDEN',
+                  WAITLIST_ERROR_CODES.INVITE_CODE_REQUIRED,
+                )
+              }
 
-							const normalizedEmail = email.toLowerCase();
-							const entry = (await ctx.context.adapter.findOne({
-								model: "waitlist",
-								where: [
-									{ field: "inviteCode", value: code },
-									{ field: "status", value: "approved" },
-								],
-							})) as Record<string, unknown> | null;
+              const normalizedEmail = email.toLowerCase()
+              const entry = (await ctx.context.adapter.findOne({
+                model: 'waitlist',
+                where: [
+                  { field: 'inviteCode', value: code },
+                  { field: 'status', value: 'approved' },
+                ],
+              })) as Record<string, unknown> | null
 
-							if (!entry) {
-								throw APIError.from(
-									"FORBIDDEN",
-									WAITLIST_ERROR_CODES.INVALID_INVITE_CODE,
-								);
-							}
+              if (!entry) {
+                throw APIError.from(
+                  'FORBIDDEN',
+                  WAITLIST_ERROR_CODES.INVALID_INVITE_CODE,
+                )
+              }
 
-							// Verify invite code belongs to the registering email
-							if (entry.email !== normalizedEmail) {
-								throw APIError.from(
-									"FORBIDDEN",
-									WAITLIST_ERROR_CODES.INVALID_INVITE_CODE,
-								);
-							}
+              // Verify invite code belongs to the registering email
+              if (entry.email !== normalizedEmail) {
+                throw APIError.from(
+                  'FORBIDDEN',
+                  WAITLIST_ERROR_CODES.INVALID_INVITE_CODE,
+                )
+              }
 
-							// Check expiration
-							if (
-								entry.inviteExpiresAt &&
-								new Date(entry.inviteExpiresAt as string) < new Date()
-							) {
-								throw APIError.from(
-									"FORBIDDEN",
-									WAITLIST_ERROR_CODES.INVALID_INVITE_CODE,
-								);
-							}
-						} else if (email) {
-							// No invite code required -- just check approval status
-							const normalizedEmail = email.toLowerCase();
-							const entry = (await ctx.context.adapter.findOne({
-								model: "waitlist",
-								where: [{ field: "email", value: normalizedEmail }],
-							})) as Record<string, unknown> | null;
+              // Check expiration
+              if (
+                entry.inviteExpiresAt
+                && new Date(entry.inviteExpiresAt as string) < new Date()
+              ) {
+                throw APIError.from(
+                  'FORBIDDEN',
+                  WAITLIST_ERROR_CODES.INVALID_INVITE_CODE,
+                )
+              }
+            }
+            else if (email) {
+              // No invite code required -- just check approval status
+              const normalizedEmail = email.toLowerCase()
+              const entry = (await ctx.context.adapter.findOne({
+                model: 'waitlist',
+                where: [{ field: 'email', value: normalizedEmail }],
+              })) as Record<string, unknown> | null
 
-							if (!entry || entry.status !== "approved") {
-								throw APIError.from(
-									"FORBIDDEN",
-									WAITLIST_ERROR_CODES.NOT_APPROVED,
-								);
-							}
-						}
-						// If no email in body (e.g., OAuth callbacks), the databaseHooks
-						// will catch it
-					}),
-				},
-			],
-		},
+              if (!entry || entry.status !== 'approved') {
+                throw APIError.from(
+                  'FORBIDDEN',
+                  WAITLIST_ERROR_CODES.NOT_APPROVED,
+                )
+              }
+            }
+            // If no email in body (e.g., OAuth callbacks), the databaseHooks
+            // will catch it
+          }),
+        },
+      ],
+    },
 
-		schema: mergeSchema(schema, opts.schema),
-		$ERROR_CODES: WAITLIST_ERROR_CODES,
-	} satisfies BetterAuthPlugin;
-};
+    schema: mergeSchema(schema, opts.schema),
+    $ERROR_CODES: WAITLIST_ERROR_CODES,
+  } satisfies BetterAuthPlugin
+}
