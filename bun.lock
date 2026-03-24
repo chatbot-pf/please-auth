@@ -20,7 +20,7 @@
       "name": "@please-auth/docs",
       "dependencies": {
         "better-sqlite3": "^12.2.0",
-        "docus": "latest",
+        "docus": "^5.8.1",
         "nuxt": "^4.0.0",
       },
     },
